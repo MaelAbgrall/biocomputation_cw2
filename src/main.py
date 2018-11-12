@@ -22,7 +22,7 @@ if(debug == False):
 pop_size = 1000         # 1000 elements
 
 # GA only
-trash_percentage = 0.5  # kill 50% of the population per epoch
+selection_percentage = 0.5  # kill 50% of the population per epoch
 mutation_factor = 0.1   # mutate 10% of the elements after breeding
 
 # PSO only
@@ -32,44 +32,35 @@ mutation_factor = 0.1   # mutate 10% of the elements after breeding
 #population = numpy.array([[1, 7], [3, 8], [2, 9]])
 # numpy.sort(population, axis=1)
 
-population = numpy.array([[1, 3], [1, 7]])
-res_bo = benchmark.booth(population[:, 0], population[:, 1])
-if(res_bo[0, 2] == 0):
-    print("booth pass")
-if(res_bo[0, 2] != 0):
-    print("booth fail, result=", res_bo[0, 2], " expected=", 0)
+if(debug == True):
+    print("Booth")
+    funct = benchmark.Booth()
+    test = numpy.array([[1, 3]])
+    funct.test(test[:, 0], test[:, 1], 0)
 
-population = numpy.array([[0, 0], [1, 7]])
-res_mat = benchmark.matyas(population[:, 0], population[:, 1])
-if(res_mat[0, 2] == 0):
-    print("matyas pass")
-if(res_mat[0, 2] != 0):
-    print("matyas fail, result=", res_mat[0, 2], " expected=", 0)
+    print("Matyas")
+    funct = benchmark.Matyas()
+    test = numpy.array([[0, 0]])
+    funct.test(test[:, 0], test[:, 1], 0)
 
-population = numpy.array([[8.05502, -9.66459], [1, 7]])
-res_ho = benchmark.holder_table(population[:, 0], population[:, 1])
-if(res_ho[0, 2] == -19.208502567767606):
-    print("holder pass")
-if(res_ho[0, 2] != -19.208502567767606):
-    print("holder fail, result=", res_ho[0, 2], " expected=", -19.208502567767606)
+    print("Hölder table")
+    funct = benchmark.HolderTable()
+    test = numpy.array([[8.05502, -9.66459]])
+    funct.test(test[:, 0], test[:, 1], -19.208502567767606)
 
-population = numpy.array([[512, 404.2319], [1, 7]])
-res_egg = benchmark.eggholder(population[:, 0], population[:, 1])
-if(res_egg[0, 2] == -959.6406627106155):
-    print("eggholder pass")
-if(res_egg[0, 2] != -959.6406627106155):
-    print("eggholder fail, result=", res_egg[0, 2], " expected=", -959.6406627106155)
+    print("Eggholder")
+    funct = benchmark.EggHolder()
+    test = numpy.array([[512, 404.2319]])
+    funct.test(test[:, 0], test[:, 1], -959.6406627106155)
 
-population = numpy.array([[0, 0], [1, 7]])
-res_ac = benchmark.ackley(population[:, 0], population[:, 1])
-if(res_ac[0, 2] == 0):
-    print("ackley pass")
-if(res_ac[0, 2] != 0):
-    print("ackley fail, result=", res_ac[0, 2], " expected=", 0)
+    print("Ackley")
+    funct = benchmark.Ackley()
+    test = numpy.array([[0, 0]])
+    funct.test(test[:, 0], test[:, 1], 0)
 
-population = numpy.array([[3.0, 2.0], [1, 7]])
-res_hi = benchmark.himmelblau(population[:, 0], population[:, 1])
-if(res_hi[0, 2] == 0.0):
-    print("himmelbleau pass")
-if(res_hi[0, 2] != 0.0):
-    print("himmelbleau fail, result=", res_hi[0, 2], " expected=", 0)
+    print("Himmelblau")
+    funct = benchmark.Himmelblau()
+    test = numpy.array([[3.0, 2.0]])
+    funct.test(test[:, 0], test[:, 1], 0)
+
+
