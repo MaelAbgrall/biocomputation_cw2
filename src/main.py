@@ -1,4 +1,4 @@
-# python integrated
+# integrated
 import sys
 import os
 import time
@@ -9,9 +9,21 @@ import matplotlib
 matplotlib.use('Agg')
 import matplotlib.pyplot as plt
 
-# local
-import benchmarkFunctions as benchmark
+# local dependencies
+from PSO import ParticleSwarmOptimization
 from GA import GeneticAlgorithm
+import benchmarkFunctions as benchmark
+
+if("-ga" in sys.argv):
+    alg_type = "ga"
+
+if("-pso" in sys.argv):
+    alg_type = "pso"
+
+if("-ga" not in sys.argv and "-pso" not in sys.argv):
+    print("please select an optimizer with -ga or -pso")
+    exit()
+
 
 # debug ?
 debug = True
@@ -19,19 +31,38 @@ debug = True
 # if debug, create result directory
 path = None
 if(debug == False):
-    path = "result/" + "test_" + str(time.time())
+    path = "result/" + "test_" + alg_type + "_" + str(time.time())
     os.makedirs(path, exist_ok=True)
 
-# init GA & PSO
-pop_size = 1000         # 1000 elements
 
 sizes = [10, 50, 100, 500, 1000]
 benchmark_list = [benchmark.Matyas(), benchmark.Booth(
 ), benchmark.HolderTable(), benchmark.EggHolder(), benchmark.Himmelblau()]
 
-passage = 100
+lower_bound_list = [-10, -10, -10, -512, -5]
+upper_bound_list = [10, 10, 10, 512, 5]
 
-if(debug == True):
+# how many benchmark will be done
+passage = 500
+# how many epoch without improvement before stopping the algorithm
+plateau_lengh = 50
+
+#######################################
+#    Genetic Algorithm PARAMETERS     #
+#######################################
+child_percentage=0.25
+tournament_size=0.25
+mutation_factor=0.1
+kill_rate = 0.30
+
+###################################
+#   Particle Swarm PARAMETERS     #
+###################################
+intertia_weight=.5
+cognitive_weight=1
+social_weight=2
+
+"""if(debug == True):
     print("Booth")
     funct = benchmark.Booth()
     test = numpy.array([[1, 3]])
@@ -61,39 +92,79 @@ if(debug == True):
     funct = benchmark.Himmelblau()
     test = numpy.array([[3.0, 2.0]])
     funct.test(test[:, 0], test[:, 1], 0)
+"""
 
+# saving to csv (only if not debug)
+time_output = "function, 10 sample, 50 sample, 100 sample, 500 sample, 1000 sample\n"
+iteration_output = "function, 10 sample, 50 sample, 100 sample, 500 sample, 1000 sample\n"
 
 # benchmarking
 #   each function
-result_list = []
-for bench_fn in benchmark_list:
+for position in range(len(benchmark_list)):
 
-    print("\nBenchmarking", bench_fn.get_name())
+    print("\nBenchmarking", benchmark_list[position].get_name())
+    time_output += benchmark_list[position].get_name()
+    iteration_output += benchmark_list[position].get_name()
 
-    function_result = []
     # benchmarking different population size
     for pop_size in sizes:
 
+        time_output += ", "
+        iteration_output += ", "
+
         print(pop_size, "elements")
 
-        ga = GeneticAlgorithm(pop_size=pop_size, child_percentage=0.25,
-                              tournament_size=0.25, mutation_factor=0.1,
-                              plateau_lengh=50)
-
+        # repeat multiple time (passage)
         time_history = []
+        iteration_history = []
         for _ in range(passage):
+
+            if(alg_type == "ga"):
+                optimizer_algorithm = GeneticAlgorithm(
+                    pop_size,
+                    child_percentage,
+                    tournament_size,
+                    mutation_factor,
+                    plateau_lengh)
+            if(alg_type == "pso"):
+                optimizer_algorithm = ParticleSwarmOptimization(
+                    pop_size,
+                    intertia_weight,
+                    cognitive_weight,
+                    social_weight,
+                    plateau_lengh)
+
             start_benchmark = time.time()
-            ga.optimize(lower_bound=-10, upper_bound=10,
-                        function_to_optimize=bench_fn)
+
+            best_sample, iteration = optimizer_algorithm.optimize(
+                lower_bound=lower_bound_list[position],
+                upper_bound=upper_bound_list[position],
+                function_to_optimize=benchmark_list[position])
+
             end_benchmark = time.time()
+
             time_history.append(end_benchmark - start_benchmark)
+            iteration_history.append(iteration - (plateau_lengh - 1))
+        # end of for passages
+
         time_history = numpy.array(time_history)
         average_time = numpy.mean(time_history)
         print("mean time:", average_time)
-        function_result.append(numpy.array([pop_size, average_time]))
+        time_output += str(average_time)
+
+        iteration_history = numpy.array(iteration_history)
+        average_iteration = numpy.mean(iteration_history)
+        print("mean iteration:", average_iteration)
+        iteration_output += str(average_iteration)
 
     # end of for pop_size
-    function_result = numpy.array(function_result)
-    result_list.append(function_result)
-
+    time_output += "\n"
+    iteration_output += "\n"
 # end of for benchmarks
+
+if(debug == False):
+    with open(path + "/algorithm_time_output.csv", "w+") as text_file:
+        text_file.write(time_output)
+
+    with open(path + "/algorithm_iteration_output.csv", "w+") as text_file:
+        text_file.write(iteration_output)

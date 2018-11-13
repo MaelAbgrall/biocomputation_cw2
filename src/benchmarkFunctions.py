@@ -53,9 +53,7 @@ class Booth(BenchMark):
 
         """
         result = (array_x + 2 *array_y - 7) * (array_x + 2 *array_y - 7) + (2 * array_x + array_y - 5) * (2 * array_x + array_y - 5)
-        
-        full_array = numpy.stack([array_x, array_y, result], axis=1) 
-        return full_array
+        return result
     
     def get_name(self):
         return "Booth"
@@ -81,9 +79,7 @@ class Matyas(BenchMark):
 
         """
         result = 0.26 *( array_x*array_x + array_y*array_y ) - 0.48 * array_x * array_y
-        
-        full_array = numpy.stack([array_x, array_y, result], axis=1) 
-        return full_array
+        return result
     
 class HolderTable(BenchMark):
     """execute Hölder table function:
@@ -106,9 +102,7 @@ class HolderTable(BenchMark):
 
         """
         result = - (numpy.absolute( numpy.sin(array_x) * numpy.cos(array_y) * numpy.exp( numpy.absolute( 1-(numpy.sqrt(array_x*array_x + array_y*array_y) / math.pi)) ) ))
-        
-        full_array = numpy.stack([array_x, array_y, result], axis=1) 
-        return full_array
+        return result
 
 class EggHolder(BenchMark):
     """execute eggholder function:
@@ -131,9 +125,7 @@ class EggHolder(BenchMark):
 
         """
         result = - (array_y + 47) * numpy.sin( numpy.sqrt( numpy.abs( array_x/2 + (array_y +47) ) ) ) - array_x * numpy.sin( numpy.sqrt( numpy.abs( array_x - (array_y+47) ) ) )
-        
-        full_array = numpy.stack([array_x, array_y, result], axis=1) 
-        return full_array
+        return result
 
 class Ackley(BenchMark):
     """execute ackley function:
@@ -156,9 +148,7 @@ class Ackley(BenchMark):
 
         """
         result = -20 * numpy.exp( -0.2 * numpy.sqrt( 0.5 * ( array_x*array_x + array_y*array_y) ) ) - numpy.exp( 0.5 * ( numpy.cos( 2*array_x*math.pi ) + numpy.cos( 2*array_y*math.pi ) ) ) + 20 + math.exp(1)
-        
-        full_array = numpy.stack([array_x, array_y, result], axis=1) 
-        return full_array
+        return result
 
 class Himmelblau(BenchMark):
     """execute Himmelblau function:
@@ -181,6 +171,4 @@ class Himmelblau(BenchMark):
 
         """
         result = (array_x*array_x + array_y - 11) * (array_x*array_x + array_y - 11) + (array_x + array_y*array_y -7) * (array_x + array_y*array_y -7)
-        
-        full_array = numpy.stack([array_x, array_y, result], axis=1) 
-        return full_array
+        return result

@@ -6,7 +6,20 @@ import numpy
 class GeneticAlgorithm ():
 
     def __init__(self, pop_size, child_percentage, tournament_size, mutation_factor, plateau_lengh, max_epoch=None, debug=False):
+        """use a genetic algorithm to minimise a function
         
+        Arguments:
+            pop_size {int} -- population size
+            child_percentage {float} -- percentage of child to create (eg. 0.75)
+            tournament_size {float} -- percentage of parent to pick up for a tournament (eg. 0.75)
+            mutation_factor {float} -- percentage of child to mutate (eg. 0.1)
+            plateau_lengh {int} -- stop criterion: how many epoch the algorithm can do without improvement
+        
+        Keyword Arguments:
+            max_epoch {int} -- if not none, the algorithm will stop either if there is no improvement (plateau) or the maximum number of epoch has been reached (default: {None})
+            debug {bool} -- show debug prints (default: {False})
+        """
+
         self.pop_size = pop_size
 
         self.tournament_size = int(tournament_size * pop_size)
@@ -64,7 +77,7 @@ class GeneticAlgorithm ():
             print("stop at iteration", iteration)
             print("best sample:", best_sample)
 
-        return best_sample
+        return best_sample, iteration
     
     def _create_population(self):
         """create a random population
@@ -81,7 +94,9 @@ class GeneticAlgorithm ():
         """
             solve the function using the population
         """
-        return self.function_to_optimize.solve(population[:, 0], population[:, 1])
+        result = self.function_to_optimize.solve(population[:, 0], population[:, 1])
+        population = numpy.stack([population[:, 0], population[:, 1], result], axis=1)
+        return population
     
     def _stop(self, population, iteration):
         # pick up the best sample
@@ -97,6 +112,8 @@ class GeneticAlgorithm ():
             array_hist = numpy.array(self.history[-self.plateau_lengh:])
             # if all the elements are identical
             if(numpy.unique(array_hist[:, 2]).shape[0] == 1):
+                if(iteration == 0):
+                    import ipdb; ipdb.set_trace()
                 return True
         
         # at last, if we did too many iteration
