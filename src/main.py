@@ -1,13 +1,17 @@
-#python integrated
+# python integrated
 import sys
 import os
 import time
 
 # dependencies
 import numpy
+import matplotlib
+matplotlib.use('Agg')
+import matplotlib.pyplot as plt
 
 # local
 import benchmarkFunctions as benchmark
+from GA import GeneticAlgorithm
 
 # debug ?
 debug = True
@@ -21,16 +25,11 @@ if(debug == False):
 # init GA & PSO
 pop_size = 1000         # 1000 elements
 
-# GA only
-selection_percentage = 0.5  # kill 50% of the population per epoch
-mutation_factor = 0.1   # mutate 10% of the elements after breeding
+sizes = [10, 50, 100, 500, 1000]
+benchmark_list = [benchmark.Matyas(), benchmark.Booth(
+), benchmark.HolderTable(), benchmark.EggHolder(), benchmark.Himmelblau()]
 
-# PSO only
-
-
-# TODO debug
-#population = numpy.array([[1, 7], [3, 8], [2, 9]])
-# numpy.sort(population, axis=1)
+passage = 100
 
 if(debug == True):
     print("Booth")
@@ -64,3 +63,37 @@ if(debug == True):
     funct.test(test[:, 0], test[:, 1], 0)
 
 
+# benchmarking
+#   each function
+result_list = []
+for bench_fn in benchmark_list:
+
+    print("\nBenchmarking", bench_fn.get_name())
+
+    function_result = []
+    # benchmarking different population size
+    for pop_size in sizes:
+
+        print(pop_size, "elements")
+
+        ga = GeneticAlgorithm(pop_size=pop_size, child_percentage=0.25,
+                              tournament_size=0.25, mutation_factor=0.1,
+                              plateau_lengh=50)
+
+        time_history = []
+        for _ in range(passage):
+            start_benchmark = time.time()
+            ga.optimize(lower_bound=-10, upper_bound=10,
+                        function_to_optimize=bench_fn)
+            end_benchmark = time.time()
+            time_history.append(end_benchmark - start_benchmark)
+        time_history = numpy.array(time_history)
+        average_time = numpy.mean(time_history)
+        print("mean time:", average_time)
+        function_result.append(numpy.array([pop_size, average_time]))
+
+    # end of for pop_size
+    function_result = numpy.array(function_result)
+    result_list.append(function_result)
+
+# end of for benchmarks

@@ -10,6 +10,10 @@ class BenchMark(ABC):
     """
 
     @abstractmethod
+    def get_name(self):
+        raise NotImplementedError
+
+    @abstractmethod
     def solve(self, array_x, array_y):
         raise NotImplementedError
     
@@ -36,7 +40,6 @@ class Booth(BenchMark):
 
         (x+2y-7)² + (2x+y-5)²
     """
-
     def solve(self, array_x, array_y):
         """solve booth function:
         
@@ -54,11 +57,16 @@ class Booth(BenchMark):
         full_array = numpy.stack([array_x, array_y, result], axis=1) 
         return full_array
     
+    def get_name(self):
+        return "Booth"
+    
 class Matyas(BenchMark):
     """execute Matyas function:
 
         0.26(x²+y²) - 0.48xy
     """
+    def get_name(self):
+        return "Matyas"
 
     def solve(self, array_x, array_y):
         """solve Matyas function:
@@ -82,6 +90,8 @@ class HolderTable(BenchMark):
 
         - abs( sinx * cosy exp( abs( 1- (sqrt(x*x + y*y)/Pi))))
     """
+    def get_name(self):
+        return "Holder Table"
 
     def solve(self, array_x, array_y):
         """solve Hölder table function:
@@ -105,6 +115,8 @@ class EggHolder(BenchMark):
 
         - (y+47) sin( sqrt( abs( x/2 + (y+47)))) - x sin( sqrt( abs( x - (y+47))))
     """
+    def get_name(self):
+        return "Eggholder"
 
     def solve(self, array_x, array_y):
         """solve eggholder function:
@@ -128,6 +140,8 @@ class Ackley(BenchMark):
 
         -20 exp(-0.2 sqrt(0.5(x² + y²))) - exp(0.5 * (cos(2xPi) + cos(2yPi))) + 20 + exp(1)
     """
+    def get_name(self):
+        return "Ackley"
 
     def solve(self, array_x, array_y):
         """solve ackley function:
@@ -151,6 +165,8 @@ class Himmelblau(BenchMark):
 
         (x²+y-11)² + (x+y²-7)²
     """
+    def get_name(self):
+        return "Himmelblau"
 
     def solve(self, array_x, array_y):
         """solve Himmelblau function:
