@@ -112,8 +112,6 @@ class GeneticAlgorithm ():
             array_hist = numpy.array(self.history[-self.plateau_lengh:])
             # if all the elements are identical
             if(numpy.unique(array_hist[:, 2]).shape[0] == 1):
-                if(iteration == 0):
-                    import ipdb; ipdb.set_trace()
                 return True
         
         # at last, if we did too many iteration

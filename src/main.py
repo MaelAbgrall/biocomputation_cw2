@@ -35,7 +35,7 @@ if(debug == False):
     os.makedirs(path, exist_ok=True)
 
 
-sizes = [10, 50, 100, 500, 1000]
+sizes = [1000, 50, 100, 500, 1000]
 benchmark_list = [benchmark.Matyas(), benchmark.Booth(
 ), benchmark.HolderTable(), benchmark.EggHolder(), benchmark.Himmelblau()]
 
@@ -43,7 +43,7 @@ lower_bound_list = [-10, -10, -10, -512, -5]
 upper_bound_list = [10, 10, 10, 512, 5]
 
 # how many benchmark will be done
-passage = 500
+passage = 1
 # how many epoch without improvement before stopping the algorithm
 plateau_lengh = 50
 
@@ -53,7 +53,6 @@ plateau_lengh = 50
 child_percentage=0.25
 tournament_size=0.25
 mutation_factor=0.1
-kill_rate = 0.30
 
 ###################################
 #   Particle Swarm PARAMETERS     #
