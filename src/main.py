@@ -26,7 +26,7 @@ if("-ga" not in sys.argv and "-pso" not in sys.argv):
 
 
 # debug ?
-debug = True
+debug = False
 
 # if debug, create result directory
 path = None
@@ -35,7 +35,7 @@ if(debug == False):
     os.makedirs(path, exist_ok=True)
 
 
-sizes = [1000, 50, 100, 500, 1000]
+sizes = [10, 50, 100, 500, 1000]
 benchmark_list = [benchmark.Matyas(), benchmark.Booth(
 ), benchmark.HolderTable(), benchmark.EggHolder(), benchmark.Himmelblau()]
 
@@ -43,7 +43,7 @@ lower_bound_list = [-10, -10, -10, -512, -5]
 upper_bound_list = [10, 10, 10, 512, 5]
 
 # how many benchmark will be done
-passage = 1
+passage = 500
 # how many epoch without improvement before stopping the algorithm
 plateau_lengh = 50
 

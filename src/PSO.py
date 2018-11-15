@@ -9,10 +9,11 @@ class ParticleSwarmOptimization():
         self.cognitive = cognitive_weight
         self.social = social_weight
 
+        self.best_sample = None
+
         self.plateau_lengh = plateau_lengh
         self.max_epoch = max_epoch
         self.history = []
-        self.be = []
 
         self.debug = debug
     
@@ -72,12 +73,6 @@ class ParticleSwarmOptimization():
 
             # keep track of how many loop were done
             iteration += 1
-            #TODO
-            print("iteration", iteration)
-            """sorted_population = numpy.sort(population, axis=0)
-            best_sample = sorted_population[0]
-            print("best sample:", best_sample)"""
-
         # end of while
 
         sorted_population = numpy.sort(population, axis=0)
@@ -91,10 +86,15 @@ class ParticleSwarmOptimization():
 
 
     def _create_population(self):
-        x_pos = numpy.random.randint(self.lower_bound, self.upper_bound, size=self.pop_size)
-        y_pos = numpy.random.randint(self.lower_bound, self.upper_bound, size=self.pop_size)
-        velocity_x = numpy.random.uniform(-10., 10., size=self.pop_size)
-        velocity_y = numpy.random.uniform(-10., 10., size=self.pop_size)
+        x_pos = numpy.random.uniform(self.lower_bound, self.upper_bound, size=self.pop_size)
+        y_pos = numpy.random.uniform(self.lower_bound, self.upper_bound, size=self.pop_size)
+        velocity_x = numpy.random.uniform(self.lower_bound, self.upper_bound, size=self.pop_size)
+        velocity_y = numpy.random.uniform(self.lower_bound, self.upper_bound, size=self.pop_size)
+
+        #PSO2006 initialization
+        velocity_x = (velocity_x - x_pos) / 2
+        velocity_y = (velocity_y - y_pos) / 2
+
         return numpy.stack([x_pos, y_pos, velocity_x, velocity_y], axis=1)
 
     def _evaluate(self, population):
@@ -106,23 +106,16 @@ class ParticleSwarmOptimization():
 
     def _stop(self, population, iteration):
         # pick up the best sample
-        sorted_population = numpy.sort(population, axis=0)
-        best_sample = sorted_population[0]
-        bess = sorted_population[0, 4]
-        self.be.append(bess)
         # add it to history
-        self.history.append(best_sample)
+        self.history.append(self.best_sample)
         
         # check history evolution, does it converge ?
         if(len(self.history) >= self.plateau_lengh):
             # convert the last samples to a numpy array (more easy to handle)
             array_hist = numpy.array(self.history[-self.plateau_lengh:])
             # if all the elements are identical
-            print("n", numpy.unique(array_hist[:, 4]).shape[0])
             if(numpy.unique(array_hist[:, 4]).shape[0] == 1):
                 return True
-        if(iteration >=500):
-            import ipdb; ipdb.set_trace()
         # at last, if we did too many iteration
         if(self.max_epoch is not None and iteration+1 > self.max_epoch):
             return True
@@ -131,12 +124,6 @@ class ParticleSwarmOptimization():
         return False
 
     def _select_best(self, population):
-        # select best overall
-        #    sort
-        sorted_pop = numpy.sort(population, axis=0)
-        #    take the best of all
-        self.best_sample = sorted_pop[0]
-        
         # select best local
         # since at first call we don't have a local minimum
         if(population.shape[1] <=5):
@@ -173,6 +160,13 @@ class ParticleSwarmOptimization():
                     population_updated.append(population[position])
             # end of for element in population
             population_updated = numpy.array(population_updated)
+
+        # select best overall
+        #    sort
+        sorted_pop = numpy.sort(population_updated, axis=0)
+        #    take the best of all only if it's better than the previous one
+        if(self.best_sample is None or sorted_pop[0, 4] < self.best_sample[4]):
+            self.best_sample = sorted_pop[0]
         return population_updated
 
     def _update_velocity(self, population):
@@ -182,10 +176,7 @@ class ParticleSwarmOptimization():
         random_social_y = numpy.random.random_sample(self.pop_size)
 
         # cognitive = Cweight * random * (Pbest - Pactual)
-        try:
-            cognitive_x = self.cognitive * random_cognitive_x * (population[:, 5] - population[:, 0])
-        except:
-            import ipdb; ipdb.set_trace()
+        cognitive_x = self.cognitive * random_cognitive_x * (population[:, 5] - population[:, 0])
         cognitive_y = self.cognitive * random_cognitive_y * (population[:, 6] - population[:, 1])
 
         # social = SocWeight * random * (Pbest_all - Pactual)
