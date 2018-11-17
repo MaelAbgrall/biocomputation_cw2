@@ -18,6 +18,17 @@ class ParticleSwarmOptimization():
         self.debug = debug
     
     def optimize(self, lower_bound, upper_bound, function_to_optimize):
+        """ Array: 0 1 2 3 4 5 6
+        0: X
+        1: Y
+        2: Vx
+        3: Vy
+        4: Score
+        5: Xb
+        6: Yb
+        7: Score_b
+        """
+
         self.lower_bound = lower_bound
         self.upper_bound = upper_bound
         self.function_to_optimize = function_to_optimize
@@ -75,7 +86,7 @@ class ParticleSwarmOptimization():
             iteration += 1
         # end of while
 
-        sorted_population = numpy.sort(population, axis=0)
+        sorted_population = population[population[:, 4].argsort()]
         best_sample = sorted_population[0]
         
         if(self.debug == True):
@@ -163,7 +174,7 @@ class ParticleSwarmOptimization():
 
         # select best overall
         #    sort
-        sorted_pop = numpy.sort(population_updated, axis=0)
+        sorted_pop = population_updated[population_updated[:, 4].argsort()]
         #    take the best of all only if it's better than the previous one
         if(self.best_sample is None or sorted_pop[0, 4] < self.best_sample[4]):
             self.best_sample = sorted_pop[0]

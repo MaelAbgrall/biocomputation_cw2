@@ -70,7 +70,7 @@ class GeneticAlgorithm ():
             iteration += 1
         # end of while
         
-        sorted_population = numpy.sort(population, axis=0)
+        sorted_population = population[population[:, 2].argsort()]
         best_sample = sorted_population[0]
         
         if(self.debug == True):
@@ -88,7 +88,7 @@ class GeneticAlgorithm ():
 
         array_x = numpy.random.randint(self.lower_bound, self.upper_bound, size=self.pop_size)
         array_y = numpy.random.randint(self.lower_bound, self.upper_bound, size=self.pop_size)
-        return numpy.stack([array_x, array_y], axis=1) 
+        return numpy.stack([array_x, array_y], axis=1).astype(numpy.float64) 
 
     def _evaluate(self, population):
         """
@@ -100,7 +100,7 @@ class GeneticAlgorithm ():
     
     def _stop(self, population, iteration):
         # pick up the best sample
-        sorted_population = numpy.sort(population, axis=0)
+        sorted_population = population[population[:, 2].argsort()]
         best_sample = sorted_population[0]
 
         # add it to history
@@ -143,7 +143,7 @@ class GeneticAlgorithm ():
         # picking those samples
         picked_parents = population[positions]
         # sort and take the best
-        sorted_parents = numpy.sort(picked_parents, axis=0)
+        sorted_parents =  picked_parents[picked_parents[:, 2].argsort()]
         return sorted_parents[0]
 
     def _crossover(self, parent1, parent2):
@@ -194,9 +194,9 @@ class GeneticAlgorithm ():
 
     def _kill_weakest(self, population, child):
         # merge
-        population = numpy.concatenate((population, child), axis=0)
+        concatenated = numpy.concatenate((population, child), axis=0)
         # sort
-        population = numpy.sort(population, axis=0)
+        concatenated = concatenated[concatenated[:, 2].argsort()]
         # kill the weakest (it can be a child or a parent)
-        population = population[:self.pop_size]
-        return population
+        clear_pop = concatenated[:self.pop_size]
+        return clear_pop
