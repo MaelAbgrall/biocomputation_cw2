@@ -60,7 +60,7 @@ known_best = [
 # how many benchmark will be done
 passage = 1000
 # how many epoch without improvement before stopping the algorithm
-plateau_lengh = 50
+plateau_lengh = 100
 
 #######################################
 #    Genetic Algorithm PARAMETERS     #
