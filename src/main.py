@@ -26,7 +26,7 @@ if("-ga" not in sys.argv and "-pso" not in sys.argv):
 
 
 # debug ?
-debug = True
+debug = False
 
 # if debug, create result directory
 path = None
@@ -35,7 +35,7 @@ if(debug == False):
     os.makedirs(path, exist_ok=True)
 
 # sizes for population / particles
-sizes = [10, 50, 100, 500, 1000]
+sizes = [10, 50, 100, 500, 1000, 5000, 10000]
 
 # which funtions to execute
 benchmark_list = [
@@ -60,7 +60,7 @@ known_best = [
 # how many benchmark will be done
 passage = 1000
 # how many epoch without improvement before stopping the algorithm
-plateau_lengh = 100
+plateau_lengh = 150
 
 #######################################
 #    Genetic Algorithm PARAMETERS     #
@@ -72,11 +72,11 @@ mutation_factor=0.5
 ###################################
 #   Particle Swarm PARAMETERS     #
 ###################################
-intertia_weight=.5
-cognitive_weight=1
-social_weight=2
+intertia_weight=.9
+cognitive_weight=2
+social_weight=1.5
 
-"""if(debug == True):
+if(debug == True):
     print("Booth")
     funct = benchmark.Booth()
     test = numpy.array([[1, 3]])
@@ -106,7 +106,7 @@ social_weight=2
     funct = benchmark.Himmelblau()
     test = numpy.array([[3.0, 2.0]])
     funct.test(test[:, 0], test[:, 1], 0)
-"""
+
 
 # saving to csv (only if not debug)
 # this script is benchmarking 5 elements: the time, number of iteration,
@@ -124,7 +124,7 @@ for  bench_pos in range(len(benchmark_list)):
     print("\nBenchmarking", benchmark_list[ bench_pos].get_name())
     time_output += benchmark_list[ bench_pos].get_name()
     iteration_output += benchmark_list[ bench_pos].get_name()
-    best_time_output += benchmark_list[ bench_pos].get_name()
+    best_output += benchmark_list[ bench_pos].get_name()
     best_time_output += benchmark_list[ bench_pos].get_name()
     best_iteration_output += benchmark_list[ bench_pos].get_name()
 

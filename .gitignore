@@ -3,5 +3,6 @@ env/
 result/
 .vscode
 
-#python arteface
+#python files
 *.pyc
+__pycache__/

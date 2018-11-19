@@ -28,10 +28,10 @@ class BenchMark(ABC):
 
         output = self.solve(array_x, array_y)
 
-        if(output[0, 2] == result):
+        if(output[0] == result):
             print("pass")
-        if(output[0, 2] != result):
-            print("fail... \t Expected:", result, " Got:", output[0, 2])
+        if(output[0] != result):
+            print("fail... \t Expected:", result, " Got:", output[0])
             
 
 
