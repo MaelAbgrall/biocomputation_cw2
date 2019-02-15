@@ -63,7 +63,7 @@ function | 10 sample | 50 sample | 100 sample | 500 sample | 1000 sample |
 
 ### PSO
 #### Mean processing time (s)
-| function	| 10 sample	| 50 sample	| 100 sample	| 500 sample	| 1000 sample |
+| function	| 10 particle	| 50 particle	| 100 particle	| 500 particle	| 1000 particle |
 | ---- | ---- | ----- | ---- | ---- | ---- |
 | Matyas	| 0.030928	| 0.053708	| 0.083029	| 0.311138	| 0.602298 |
 | Booth	| 0.025702	| 0.049388	| 0.080727	| 0.325262	| 0.624594 |
@@ -72,7 +72,7 @@ function | 10 sample | 50 sample | 100 sample | 500 sample | 1000 sample |
 | Himmelblau	| 0.020245	| 0.038009	| 0.059572	| 0.231943	| 0.443113 |
 
 #### Mean iteration
-| function	| 10 sample	| 50 sample	| 100 sample	| 500 sample	| 1000 sample |
+| function	| 10 particle	| 50 particle	| 100 particle	| 500 particle	| 1000 particle |
 | ---- | ---- | ----- | ---- | ---- | ---- |
 | Matyas	| 275.942	| 312.558	| 319.297	| 351.393	| 371 |
 | Booth	| 169.152	| 143.534	| 137.54	| 126.925	| 123.551 |
